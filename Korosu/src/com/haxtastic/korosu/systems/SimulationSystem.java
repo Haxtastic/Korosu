@@ -75,7 +75,7 @@ public class SimulationSystem extends EntitySystem {
 	
 	@Override
 	protected boolean checkProcessing() {
-		Player player = world.getManager(GroupManager.class).getEntities(Constants.Groups.PLAYER_CAR).get(0).getComponent(Player.class);
+		Player player = world.getManager(GroupManager.class).getEntities(Constants.Groups.PLAYERS).get(0).getComponent(Player.class);
 		if(player.started && player.alive)
 			return true;
 		else

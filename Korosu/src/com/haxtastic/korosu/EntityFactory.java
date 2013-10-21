@@ -17,7 +17,12 @@ import com.badlogic.gdx.physics.box2d.joints.FrictionJoint;
 import com.badlogic.gdx.physics.box2d.joints.FrictionJointDef;
 import com.haxtastic.korosu.systems.SimulationSystem;
 import com.haxtastic.korosu.components.AnimationSprite;
+import com.haxtastic.korosu.components.Bullet;
+import com.haxtastic.korosu.components.Enemy;
 import com.haxtastic.korosu.components.Floating;
+import com.haxtastic.korosu.components.Health;
+import com.haxtastic.korosu.components.Input;
+import com.haxtastic.korosu.components.Inventory;
 import com.haxtastic.korosu.components.Offset;
 import com.haxtastic.korosu.components.Player;
 import com.haxtastic.korosu.components.Position;
@@ -27,7 +32,7 @@ import com.haxtastic.korosu.components.Actor;
 
 public class EntityFactory {
 	
-	static BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("fixtures/car.json"));
+	static BodyEditorLoader loader = new BodyEditorLoader(Gdx.files.internal("fixtures/fixtures.json"));
 	
 	public static void cleanWorld(World world){
 		ImmutableBag<EntitySystem> systems = world.getSystems();
@@ -45,19 +50,19 @@ public class EntityFactory {
 		e.addComponent(position);
 		
 		Sprite sprite = new Sprite();
-		sprite.name = "titlescreen";
+		sprite.name = "back";
 		sprite.r = 255/255f;
 		sprite.g = 255/255f;
 		sprite.b = 255/255f;
 		sprite.a = 255/255f;
-		sprite.scaleX = 16.0f;
-		sprite.scaleY = 9.0f;
-		sprite.layer = Sprite.Layer.ACTORS_1;
+		sprite.scaleX = 20.0f;
+		sprite.scaleY = 12.0f;
+		sprite.layer = Sprite.Layer.BACKGROUND;
 		e.addComponent(sprite);
 		
 		return e;
 	}
-	
+		
 	public static Entity createPlayer(World world, SimulationSystem sim, float x, float y) {
 		Entity e = world.createEntity();
 		
@@ -66,8 +71,10 @@ public class EntityFactory {
 		position.y = position.py = y;
 		e.addComponent(position);
 		
+		e.addComponent(new Health(5));
+		
 		Sprite sprite = new Sprite();
-		sprite.name = "duderot";
+		sprite.name = "player";
 		sprite.r = 255/255f;
 		sprite.g = 255/255f;
 		sprite.b = 255/255f;
@@ -75,7 +82,7 @@ public class EntityFactory {
 		sprite.centered = true;
 		sprite.scaleX = 0.5f;
 		sprite.scaleY = 1.0f;
-		sprite.layer = Sprite.Layer.ACTORS_3;
+		sprite.layer = Sprite.Layer.GUYS;
 		e.addComponent(sprite);
 		
 		Velocity velocity = new Velocity();
@@ -85,39 +92,21 @@ public class EntityFactory {
         FixtureDef fd = new FixtureDef();
         fd.density = 1.5f;
         fd.friction = 0.5f;
+        fd.filter.categoryBits = Constants.Layers.PLAYER;
+        fd.filter.maskBits = Constants.Masks.PLAYER;
         
         Actor actor = new Actor(sim, x, y, BodyType.DynamicBody);
         actor.name = "Player";
-        //actor.actor.setTransform(actor.actor.getPosition(), -90.0f * MathUtils.degreesToRadians);
         actor.actor.setFixedRotation(true);
         
         // 4. Create the body fixture automatically by using the loader.
-        loader.attachFixture(actor.actor, "duderot", fd, 0.5f, 1);
+        loader.attachFixture(actor.actor, "player", fd, 0.5f, Constants.Layers.PLAYER);
         actor.actor.setUserData((Object)0);
-        //fd.isSensor = true;
-        //loader.attachFixture(actor.actor, "jumpsensor", fd, 0.33f, 3);
-        /*
-        BodyDef box = new BodyDef();
-        box.type = BodyType.StaticBody;
-        
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(10, 10);
-        FixtureDef bfd = new FixtureDef();
-        bfd.shape = shape;
-        bfd.friction = 1.0f;
-        
-        Body boxBody = sim.simulation.createBody(box);
-        boxBody.createFixture(bfd);
-        
-        FrictionJointDef joint = new FrictionJointDef();
-        joint.maxForce = 1.0f;
-        joint.maxTorque = 5;
-        joint.initialize(actor.actor, boxBody, new Vector2(0.0f, 0.0f));
-        sim.simulation.createJoint(joint);
-        
-        shape.dispose();
-        */
+
         e.addComponent(actor);
+        
+        e.addComponent(new Input());
+        e.addComponent(new Inventory());
 		
 		Player player = new Player();
 		player.alive = true;
@@ -125,33 +114,77 @@ public class EntityFactory {
 		player.restart = false;
 		e.addComponent(player);
 		
-		world.getManager(GroupManager.class).add(e, Constants.Groups.PLAYER_CAR);
+		world.getManager(GroupManager.class).add(e, Constants.Groups.PLAYERS);
 		
 		return e;
 	}
 	
-	public static Entity createWall(World world, SimulationSystem sim, float x, float y, float of, boolean type) {
+	public static Entity createGuy(World world, SimulationSystem sim, float x, float y, float speed, String type){
+		Entity e = world.createEntity();
+		
+		Position position = new Position();
+		position.x = position.px = x;
+		position.y = position.py = y;
+		e.addComponent(position);
+		
+		e.addComponent(new Enemy());
+		
+		e.addComponent(new Health(5));
+		
+		Sprite sprite = new Sprite();
+		sprite.name = type;
+		sprite.r = 255/255f;
+		sprite.g = 255/255f;
+		sprite.b = 255/255f;
+		sprite.a = 255/255f;
+		sprite.centered = true;
+		sprite.scaleX = 0.5f;
+		sprite.scaleY = 1.0f;
+		sprite.layer = Sprite.Layer.GUYS;
+		e.addComponent(sprite);
+		
+		Velocity velocity = new Velocity();
+		velocity.velocity = new Vector2(0, 0);
+		e.addComponent(velocity);
+		
+        FixtureDef fd = new FixtureDef();
+        fd.density = 1.5f;
+        fd.friction = 0.5f;
+        fd.filter.categoryBits = Constants.Layers.ENEMY;
+        fd.filter.maskBits = Constants.Masks.ENEMY;
+        
+        Actor actor = new Actor(sim, x, y, BodyType.DynamicBody);
+        actor.name = type;
+        actor.actor.setFixedRotation(true);
+        
+        // 4. Create the body fixture automatically by using the loader.
+        loader.attachFixture(actor.actor, type, fd, 0.5f, Constants.Layers.ENEMY);
+        actor.actor.setUserData((Object)0);
+        
+        e.addComponent(actor);
+
+        world.getManager(GroupManager.class).add(e, Constants.Groups.GUYS);
+        
+		return e;
+	}
+	
+	public static Entity createWall(World world, SimulationSystem sim, float x, float y, String type) {
 		Entity e = world.createEntity();
 		
 		Position position = new Position();
 		position.x = x;
-		position.y = y + of;
+		position.y = y;
 		e.addComponent(position);
 		
-		Offset offset = new Offset();
-		offset.offset = of;
-		offset.type = type;
-		e.addComponent(offset);
-		
 		Sprite sprite = new Sprite();
-		sprite.name = "wall";
+		sprite.name = type;
 		sprite.r = 255/255f;
 		sprite.g = 255/255f;
 		sprite.b = 255/255f;
 		sprite.a = 255/255f;
 		sprite.scaleX = 0.75f;
 		sprite.scaleY = 5f;
-		sprite.layer = Sprite.Layer.ACTORS_2;
+		sprite.layer = Sprite.Layer.WALLS;
 		e.addComponent(sprite);
 		
 		Velocity velocity = new Velocity();
@@ -162,105 +195,65 @@ public class EntityFactory {
         fd.density = 1;
         fd.friction = 0.5f;
         
+        
         Actor actor = new Actor(sim, position.x, position.y, BodyType.StaticBody);
-        actor.name = "Wall";
+        actor.name = type;
         actor.actor.setFixedRotation(true);
         
         // 4. Create the body fixture automatically by using the loader.
-        loader.attachFixture(actor.actor, "wall", fd, 0.75f, 2);
+        loader.attachFixture(actor.actor, type, fd, 0.75f, Constants.Layers.WALL);
         actor.actor.setUserData((Object)0);
         
         e.addComponent(actor);
 		
-		world.getManager(GroupManager.class).add(e, Constants.Groups.ENEMY_CARS);
+		world.getManager(GroupManager.class).add(e, Constants.Groups.GUYS);
 		
 		return e;
 	}
-	
-	public static Entity createFloatingWall(World world, SimulationSystem sim, float x, float y, float of) {
+
+	public static Entity createBullet(World world, SimulationSystem sim, float x, float y, float r, float speed, Bullet bullet) {
 		Entity e = world.createEntity();
 		
-		e.addComponent(new Floating());
-		
-		Position position = new Position();
-		position.x = x;
-		position.y = y + of;
-		e.addComponent(position);
-		
-		Offset offset = new Offset();
-		offset.offset = of;
-		e.addComponent(offset);
+		bullet.origin.set(x, y);
+		e.addComponent(bullet);
 		
 		Sprite sprite = new Sprite();
-		sprite.name = "floatwall";
-		sprite.r = 255/255f;
-		sprite.g = 255/255f;
-		sprite.b = 255/255f;
-		sprite.a = 255/255f;
-		sprite.scaleX = 0.75f;
-		sprite.scaleY = 1.5f;
-		sprite.layer = Sprite.Layer.ACTORS_1;
-		e.addComponent(sprite);
-		
-		Velocity velocity = new Velocity();
-		velocity.velocity = new Vector2(0, 0);
-		e.addComponent(velocity);
-		
-        FixtureDef fd = new FixtureDef();
-        fd.density = 1;
-        fd.friction = 0.5f;
-        
-        Actor actor = new Actor(sim, position.x, position.y, BodyType.StaticBody);
-        actor.name = "FloatWall";
-        actor.actor.setFixedRotation(true);
-        loader.attachFixture(actor.actor, "floatwall", fd, 0.75f, 4);
-        actor.actor.setUserData((Object)0);
-        e.addComponent(actor);
-		
-		world.getManager(GroupManager.class).add(e, Constants.Groups.ENEMY_CARS);
-		
-		return e;
-	}
-	
-	public static Entity createBullet(World world, SimulationSystem sim, float x, float y, float r) {
-		Entity e = world.createEntity();
-		
-		Sprite sprite = new Sprite();
-		sprite.name = "bullet";
+		sprite.name = bullet.type;
 		sprite.r = 255/255f;
 		sprite.g = 255/255f;
 		sprite.b = 255/255f;
 		sprite.a = 255/255f;
 		sprite.scaleX = 0.2f;
 		sprite.scaleY = 0.1f;
-		sprite.layer = Sprite.Layer.ACTORS_3;
+		sprite.layer = Sprite.Layer.BULLETS;
 		e.addComponent(sprite);
 		
-		Position position = new Position();
-		position.x = x;
-		position.y = y;
-		position.r = r;
+		Position position = new Position(x, y, r);
 		e.addComponent(position);
 		
 		Velocity velocity = new Velocity();
-		velocity.velocity = new Vector2(10 * (MathUtils.cos(position.r)), 10 * (MathUtils.sin(position.r)));
+		velocity.velocity = new Vector2(speed * (MathUtils.cos(position.r)), speed * (MathUtils.sin(position.r)));
 		e.addComponent(velocity);
 		
         FixtureDef fd = new FixtureDef();
         fd.density = 1.5f;
         fd.friction = 0.5f;
         fd.isSensor = true;
+        fd.filter.categoryBits = Constants.Layers.BULLET;
+        fd.filter.maskBits = Constants.Masks.BULLET;
         
         Actor actor = new Actor(sim, position.x, position.y, BodyType.DynamicBody);
-        actor.name = "bullet";
+        actor.name = bullet.type;
         //actor.actor.setTransform(actor.actor.getPosition(), position.r);
         actor.actor.setFixedRotation(true);
         
         // 4. Create the body fixture automatically by using the loader.
-        loader.attachFixture(actor.actor, "bullet", fd, 0.2f, 1);
-        actor.actor.setUserData((Object)1);
+        loader.attachFixture(actor.actor, bullet.type, fd, bullet.width, Constants.Layers.BULLET);
+        actor.actor.setUserData((Object)0);
         
         e.addComponent(actor);
+        
+        world.getManager(GroupManager.class).add(e, Constants.Groups.BULLETS);
 		
 		return e;
 	}
@@ -282,7 +275,7 @@ public class EntityFactory {
 		sprite.scaleX = 1.5f;
 		sprite.scaleY = 1.5f;
 		sprite.active = true;
-		sprite.layer = AnimationSprite.Layer.ACTORS_3;
+		sprite.layer = AnimationSprite.Layer.PARTICLES;
 		e.addComponent(sprite);
 		
 		Position position = new Position();

@@ -37,6 +37,7 @@ public class AndroidInputSystem extends EntityProcessingSystem implements InputP
 	public float time, pressTime = 0;
 	private float cooldown = 0.25f;
 	private float cdcount = 0.0f;
+	private boolean cycle = false;
 	private Touchpad touchpadLeft, touchpadRight;
 	private Stage stage;
 	private OrthographicCamera camera;
@@ -55,10 +56,10 @@ public class AndroidInputSystem extends EntityProcessingSystem implements InputP
 		stage.setCamera(camera);
 		Skin skin = new Skin(Gdx.files.internal("skins/touchpad.json"));
 		touchpadLeft = new Touchpad(15, skin);
-		touchpadLeft.setBounds((1.5f * Constants.PIXELS_PER_METER_X), (1.0f * Constants.PIXELS_PER_METER_Y), (2.0f * Constants.PIXELS_PER_METER_X), (2.0f * Constants.PIXELS_PER_METER_Y));
+		touchpadLeft.setBounds((2f * Constants.PIXELS_PER_METER_X), (1.5f * Constants.PIXELS_PER_METER_Y), (2.5f * Constants.PIXELS_PER_METER_X), (2.5f * Constants.PIXELS_PER_METER_Y));
 		stage.addActor(touchpadLeft);
 		touchpadRight = new Touchpad(15, skin);
-		touchpadRight.setBounds((12.5f * Constants.PIXELS_PER_METER_X), (1.0f * Constants.PIXELS_PER_METER_Y), (2.0f * Constants.PIXELS_PER_METER_X), (2.0f * Constants.PIXELS_PER_METER_Y));
+		touchpadRight.setBounds((15f * Constants.PIXELS_PER_METER_X), (1.5f * Constants.PIXELS_PER_METER_Y), (2.5f * Constants.PIXELS_PER_METER_X), (2.5f * Constants.PIXELS_PER_METER_Y));
 		stage.addActor(touchpadRight);
 		Entity e = world.createEntity();
 		TouchpadComp touch = new TouchpadComp();
@@ -74,6 +75,13 @@ public class AndroidInputSystem extends EntityProcessingSystem implements InputP
 		Player player = pm.get(e);
 		Input input = im.get(e);
 		time += world.delta;
+		int x = Gdx.input.getX();
+		int y = Gdx.input.getY();
+		if(cycle){
+			input.cycle = true;
+			cycle = false;
+		}
+			
 		
 		float angle = (float) Math.toDegrees(Math.atan2(touchpadLeft.getKnobPercentY(), touchpadLeft.getKnobPercentX()));
     	if(angle < 0) {
@@ -117,6 +125,8 @@ public class AndroidInputSystem extends EntityProcessingSystem implements InputP
 	@Override
 	public boolean touchDown(int x, int y, int pointer, int button) {
 		stage.touchDown(x, y, pointer, button);
+		if(x >= (16 * Constants.PIXELS_PER_METER_X) && x <= (20 * Constants.PIXELS_PER_METER_X) && y >= (4 * Constants.PIXELS_PER_METER_Y) && y <= (8 * Constants.PIXELS_PER_METER_Y))
+			cycle = true;
 		return false;
 	}
 

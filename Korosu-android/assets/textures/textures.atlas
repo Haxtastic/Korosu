@@ -3,92 +3,118 @@ textures.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-titlescreen
+back
   rotate: false
-  xy: 1, 263
-  size: 949, 718
-  orig: 949, 718
-  offset: 0, 0
-  index: -1
-helicopter1
-  rotate: false
-  xy: 1, 133
-  size: 256, 128
-  orig: 256, 128
-  offset: 0, 0
-  index: -1
-helicopter2
-  rotate: false
-  xy: 1, 3
-  size: 256, 128
-  orig: 256, 128
-  offset: 0, 0
-  index: -1
-helicopter3
-  rotate: false
-  xy: 259, 133
-  size: 256, 128
-  orig: 256, 128
-  offset: 0, 0
-  index: -1
-helicopter4
-  rotate: false
-  xy: 259, 3
-  size: 256, 128
-  orig: 256, 128
-  offset: 0, 0
-  index: -1
-helicopter5
-  rotate: false
-  xy: 517, 133
-  size: 256, 128
-  orig: 256, 128
-  offset: 0, 0
-  index: -1
-helicopter6
-  rotate: false
-  xy: 517, 3
-  size: 256, 128
-  orig: 256, 128
+  xy: 1, 67
+  size: 954, 946
+  orig: 954, 946
   offset: 0, 0
   index: -1
 wall
   rotate: false
-  xy: 952, 661
+  xy: 957, 693
   size: 48, 320
   orig: 48, 320
   offset: 0, 0
   index: -1
-bullet
+9mm
   rotate: false
-  xy: 775, 197
+  xy: 1, 1
   size: 128, 64
   orig: 128, 64
   offset: 0, 0
   index: -1
 dude
   rotate: false
-  xy: 775, 131
+  xy: 131, 1
   size: 128, 64
   orig: 128, 64
   offset: 0, 0
   index: -1
+guy
+  rotate: false
+  xy: 957, 563
+  size: 64, 128
+  orig: 64, 128
+  offset: 0, 0
+  index: -1
 player
   rotate: false
-  xy: 775, 1
+  xy: 957, 433
   size: 64, 128
   orig: 64, 128
   offset: 0, 0
   index: -1
 floatwall
   rotate: false
-  xy: 952, 563
+  xy: 957, 335
   size: 48, 96
   orig: 48, 96
   offset: 0, 0
   index: -1
+button
+  rotate: false
+  xy: 261, 35
+  size: 60, 30
+  orig: 60, 30
+  offset: 0, 0
+  index: -1
 
 textures2.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+titlescreen
+  rotate: false
+  xy: 1, 261
+  size: 949, 718
+  orig: 949, 718
+  offset: 0, 0
+  index: -1
+helicopter1
+  rotate: false
+  xy: 1, 131
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1
+helicopter2
+  rotate: false
+  xy: 1, 1
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1
+helicopter3
+  rotate: false
+  xy: 259, 131
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1
+helicopter4
+  rotate: false
+  xy: 259, 1
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1
+helicopter5
+  rotate: false
+  xy: 517, 131
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1
+helicopter6
+  rotate: false
+  xy: 517, 1
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1
+
+textures3.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none

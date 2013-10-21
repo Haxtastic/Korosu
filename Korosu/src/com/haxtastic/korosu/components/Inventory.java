@@ -10,29 +10,59 @@ import java.util.ListIterator;
 public class Inventory extends Component {
 	private List<Weapon> 	weapons;
 	private List<Ammo>		ammo;
-	private int 			selected = 0;
+	private Weapon 			weapon;
 	
 	public Inventory() {
 		weapons = new ArrayList<Weapon>();
-		weapons.add(new Weapon(5f, 0.5f, 1f, 9f, "Pistol", "9mm"));
-		weapons.add(new Weapon(5f, 0.5f, 1f, 9f, "Submachine", "9mm"));
+		weapon = new Weapon(10f, 0.5f, 4f, 8f, "Pistol", "9mm");
+		weapons.add(weapon);
+		weapons.add(new Weapon(15f, 0.3f, 1f, 9f, "Submachine", "9mm"));
+		weapons.add(new Weapon(20f, 0.1f, 1f, 9f, "Colt", "9mm"));
+		weapons.add(new Weapon(25f, 0.001f, 1f, 9f, "Turbo", "9mm"));
+		weapons.add(new Weapon(15f, 0.5f, 5f, 6f, "Shotgun", "9mm"));
 		ammo = new ArrayList<Ammo>();
-		ammo.add(new Ammo(25, "9mm"));
+		ammo.add(new Ammo(1, 25, "9mm"));
+		ammo.add(new Ammo(1, 25, "Shells"));
+		
 	}
 	
-	public int cycleWeapon() {
-		ListIterator<Weapon> iterWeapon = weapons.listIterator(selected);
-		selected = iterWeapon.nextIndex();
-		if(weapons.get(selected).amount == 0)
-			return this.cycleWeapon();
-		if(selected == weapons.size()) {
-			selected = 0;
+	public Bullet getBullet() {
+		ListIterator<Ammo> iterAmmo = ammo.listIterator();
+		Ammo temp  = new Ammo();
+		Weapon wTemp = getWeapon();
+		while(iterAmmo.hasNext()){
+			temp = iterAmmo.next();
+			if(temp.bullet == wTemp.ammo)
+				break;
 		}
+		return new Bullet(temp.damage, temp.bullet, temp.width, wTemp.range);
+	}
+	
+	public int cycleWeapon(boolean fresh) {
+		ListIterator<Weapon> iterWeapon = weapons.listIterator();
+		if(!fresh)
+			while(iterWeapon.hasNext()){
+				Weapon temp = iterWeapon.next();
+				if(weapon.type == temp.type) {
+					if(!iterWeapon.hasNext())
+						return this.cycleWeapon(true);
+					break;
+				}
+			}
+		weapon = iterWeapon.next();
+		//System.out.println("SELECTED: " + (selected));
+		//System.out.println("SIZE: " + (weapons.size() -1));
+		//if(weapons.get(selected).amount == 0)
+		//	return this.cycleWeapon();
+		//System.out.println("Speed: " + (weapon.speed));
+		//System.out.println("Rate of Fire: " + (weapon.rof));
+		//System.out.println("Name: " + (weapon.type));
+		//System.out.println("Index: " + (weapons.indexOf(weapon)));
 		return 1;
 	}
 	
 	public Weapon getWeapon() {
-		return weapons.get(selected);
+		return weapon;
 	}
 	
 	public int addWeapon(Weapon wea) {

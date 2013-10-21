@@ -21,15 +21,24 @@ import com.haxtastic.korosu.Constants;
 import com.haxtastic.korosu.EntityFactory;
 import com.haxtastic.korosu.Korosu;
 import com.haxtastic.korosu.components.Actor;
+import com.haxtastic.korosu.components.Ammo;
+import com.haxtastic.korosu.components.Bullet;
 import com.haxtastic.korosu.components.Input;
+import com.haxtastic.korosu.components.Inventory;
 import com.haxtastic.korosu.components.Player;
 import com.haxtastic.korosu.components.Position;
 import com.haxtastic.korosu.components.TouchpadComp;
 import com.haxtastic.korosu.components.Velocity;
+import com.haxtastic.korosu.components.Weapon;
 
 public class InputSystem extends EntityProcessingSystem {
-	@Mapper ComponentMapper<Player> pm;
+	@Mapper ComponentMapper<Inventory> invm;
 	@Mapper ComponentMapper<Input> im;
+	@Mapper ComponentMapper<Velocity> vm;
+	@Mapper ComponentMapper<Position> pom;
+	@Mapper ComponentMapper<Actor> am;
+	@Mapper ComponentMapper<Weapon> wm;
+	@Mapper ComponentMapper<Ammo> amm;
 	
 	private boolean up, down, left, right;
 	private boolean shoot;
@@ -39,7 +48,7 @@ public class InputSystem extends EntityProcessingSystem {
 	
 	@SuppressWarnings("unchecked")
 	public InputSystem() {
-		super(Aspect.getAspectForAll(Player.class, Input.class));
+		super(Aspect.getAspectForAll(Player.class, Input.class, Velocity.class, Position.class));
 		time = 0;
 	}
 	
@@ -49,9 +58,31 @@ public class InputSystem extends EntityProcessingSystem {
 
 	@Override
 	protected void process(Entity e) {
-		Player player = pm.get(e);
+		Inventory inv = invm.get(e);
 		Input input = im.get(e);
+		Position pos = pom.get(e);
+		Weapon weapon = inv.getWeapon();
+		Bullet bullet = inv.getBullet();
+		SimulationSystem sim = am.get(e).w;
+		//Bullet ammo = amm.get(e);
 		time += world.delta;
+		
+		vm.get(e).velocity.set(input.velocity);
+		pos.r = input.angle;
+		
+		if(weapon.rof < (time - input.lastShot) && input.shoot) {
+			weapon.shoot(world, sim, pos.x, pos.y, pos.r, bullet);
+			input.lastShot = time;
+			/*System.out.println("Speed: " + (weapon.speed));
+			System.out.println("Rate of Fire: " + (weapon.rof));
+			System.out.println("Name: " + (weapon.type));
+			System.out.println("Bullet: " + (bullet.type));*/
+		}
+		if(0.2f < (time - input.lastCycle) && input.cycle){
+			inv.cycleWeapon(false);
+			input.lastCycle = time;
+		}
+		input.clean();		
 	}
 
 }

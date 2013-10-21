@@ -6,9 +6,9 @@ public class Sprite extends Component {
 	public enum Layer {
 		DEFAULT,
 		BACKGROUND,
-		ACTORS_1,
-		ACTORS_2,
-		ACTORS_3,
+		WALLS,
+		GUYS,
+		BULLETS,
 		PARTICLES;
 		
 		public int getLayerId() {

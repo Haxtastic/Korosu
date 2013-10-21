@@ -10,11 +10,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.haxtastic.korosu.systems.AndroidInputSystem;
 import com.haxtastic.korosu.systems.AnimationRenderSystem;
+import com.haxtastic.korosu.systems.BulletSystem;
 import com.haxtastic.korosu.systems.CameraSystem;
 import com.haxtastic.korosu.systems.CollisionSystem;
 import com.haxtastic.korosu.systems.HudRenderSystem;
+import com.haxtastic.korosu.systems.InputSystem;
 import com.haxtastic.korosu.systems.InterpolationSystem;
-import com.haxtastic.korosu.systems.LevelSystem;
 import com.haxtastic.korosu.systems.DesktopInputSystem;
 import com.haxtastic.korosu.systems.SimulationSystem;
 import com.haxtastic.korosu.systems.SpriteRenderSystem;
@@ -54,6 +55,8 @@ public class GameScreen implements Screen {
 			world.setSystem(new DesktopInputSystem());
 		else if(Gdx.app.getType() == ApplicationType.Android)
 			world.setSystem(new AndroidInputSystem(hudCam));
+		world.setSystem(new InputSystem());
+		world.setSystem(new BulletSystem());
 		CollisionSystem col = new CollisionSystem();
 		world.setSystem(col);
 		
@@ -63,7 +66,8 @@ public class GameScreen implements Screen {
 		simulationSystem.simulation.setContactListener(col);
 		
 		EntityFactory.createBackground(world, simulationSystem).addToWorld();
-		EntityFactory.createPlayer(world, simulationSystem, 0, 0f).addToWorld();
+		EntityFactory.createPlayer(world, simulationSystem, 5, 5f).addToWorld();
+		EntityFactory.createGuy(world, simulationSystem, 2, 7f, 5f, "guy").addToWorld();
 		
 		debugRenderer = new Box2DDebugRenderer();
 	}

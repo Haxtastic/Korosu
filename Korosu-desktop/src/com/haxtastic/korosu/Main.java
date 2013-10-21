@@ -10,7 +10,7 @@ public class Main {
 		cfg.useGL20 = false;
 		cfg.vSyncEnabled = false;
 		cfg.width = 1280;
-		cfg.height = 720;
+		cfg.height = 768;
 		
 		new LwjglApplication(new Korosu(), cfg);
 	}

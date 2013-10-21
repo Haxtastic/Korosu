@@ -21,6 +21,7 @@ import com.haxtastic.korosu.EntityFactory;
 import com.haxtastic.korosu.Korosu;
 import com.haxtastic.korosu.components.Actor;
 import com.haxtastic.korosu.components.Input;
+import com.haxtastic.korosu.components.Inventory;
 import com.haxtastic.korosu.components.Player;
 import com.haxtastic.korosu.components.Position;
 import com.haxtastic.korosu.components.Velocity;
@@ -28,6 +29,7 @@ import com.haxtastic.korosu.components.Velocity;
 public class DesktopInputSystem extends EntityProcessingSystem implements InputProcessor {
 	@Mapper ComponentMapper<Player> pm;
 	@Mapper ComponentMapper<Input> im;
+	@Mapper ComponentMapper<Inventory> ivm;
 	
 	private boolean[] keys = new boolean[259];
 	private int mLeft = 256, mRight = 257, mMiddle = 258;
@@ -60,6 +62,7 @@ public class DesktopInputSystem extends EntityProcessingSystem implements InputP
 		Input input = im.get(e);
 		float speed = player.speed;
 		time += world.delta;
+		cdcount += world.delta;
 		
 		if((keys[up] || keys[down]) && (keys[right] || keys[left]))
 			speed = ((speed/3)*2);
@@ -81,6 +84,15 @@ public class DesktopInputSystem extends EntityProcessingSystem implements InputP
     	if(angle < 0)
     		angle += 360;
     	input.angle = angle * MathUtils.degreesToRadians;
+    	
+    	if(keys[mLeft] == true) {
+    		input.shoot = true;
+    	}
+    	
+    	
+    	if(keys[Keys.H]){
+    		input.cycle = true;
+    	}
 	}
 
 	@Override

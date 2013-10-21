@@ -21,14 +21,17 @@ import com.haxtastic.korosu.Korosu;
 import com.haxtastic.korosu.Constants;
 import com.haxtastic.korosu.components.Actor;
 import com.haxtastic.korosu.components.Distance;
+import com.haxtastic.korosu.components.Inventory;
 import com.haxtastic.korosu.components.Player;
 import com.haxtastic.korosu.components.Position;
 import com.haxtastic.korosu.components.Sprite;
 import com.haxtastic.korosu.components.TouchpadComp;
 import com.haxtastic.korosu.components.Velocity;
+import com.haxtastic.korosu.components.Weapon;
 
 public class HudRenderSystem extends EntityProcessingSystem {
 	@Mapper ComponentMapper<Position> pm;
+	@Mapper ComponentMapper<Inventory> invm;
 
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
@@ -48,6 +51,7 @@ public class HudRenderSystem extends EntityProcessingSystem {
 		fontTexture.setFilter(TextureFilter.Linear, TextureFilter.MipMapLinearLinear);
 		TextureRegion fontRegion = new TextureRegion(fontTexture);
 		font = new BitmapFont(Gdx.files.internal("fonts/hud.fnt"), fontRegion, false);
+		font.setScale(0.5f);
 		font.setUseIntegerPositions(false);
 	}
 	
@@ -65,9 +69,20 @@ public class HudRenderSystem extends EntityProcessingSystem {
 	protected void process(Entity e) {
 		batch.setColor(1, 1, 1, 1);
 		Position pos = pm.get(e);
-		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 20, Korosu.FRAME_HEIGHT - (font.getBounds("F").height) - 8);
-		font.draw(batch, "Position: " + pos.x + ":" + pos.y + " - " + (pos.x+pos.y), 20, Korosu.FRAME_HEIGHT - (font.getBounds("F").height*2) - (8*2));
+		Inventory inv = invm.get(e);
+		font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), Korosu.FRAME_WIDTH - (font.getBounds("F").width*20), Korosu.FRAME_HEIGHT - (font.getBounds("F").height) - 8);
+		font.draw(batch, "Position: " + pos.x + ":" + pos.y, Korosu.FRAME_WIDTH - (font.getBounds("F").width*20), Korosu.FRAME_HEIGHT - (font.getBounds("F").height*2) - (8*2));
+		
+		if(Gdx.app.getType() == ApplicationType.Android)
+			font.draw(batch, "Change weapon", Korosu.FRAME_WIDTH - (font.getBounds("F").width*14), Korosu.FRAME_HEIGHT/2 + (font.getBounds("F").height*2));
+		
+		font.draw(batch, "Gun: " + inv.getWeapon().type, 20, Korosu.FRAME_HEIGHT - (font.getBounds("F").height) - 8);
+		font.draw(batch, "Ammo: " + inv.getWeapon().ammo, 20, Korosu.FRAME_HEIGHT - (font.getBounds("F").height)*2 - 16);
+		font.draw(batch, "Speed: " + inv.getWeapon().speed, 20, Korosu.FRAME_HEIGHT - (font.getBounds("F").height)*3 - 24);
+		font.draw(batch, "Rate of Fire: " + inv.getWeapon().rof, 20, Korosu.FRAME_HEIGHT - (font.getBounds("F").height)*4 - 32);
 		font.draw(batch, "Haxtastic gaming 2013 by mAgz", 20, 30);
+		
+		
 	}
 	
 	@Override

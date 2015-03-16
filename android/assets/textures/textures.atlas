@@ -1,0 +1,87 @@
+
+textures.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+back
+  rotate: false
+  xy: 1, 67
+  size: 954, 946
+  orig: 954, 946
+  offset: 0, 0
+  index: -1
+11mm
+  rotate: false
+  xy: 1, 1
+  size: 128, 64
+  orig: 128, 64
+  offset: 0, 0
+  index: -1
+9mm
+  rotate: false
+  xy: 1, 1
+  size: 128, 64
+  orig: 128, 64
+  offset: 0, 0
+  index: -1
+ammo
+  rotate: false
+  xy: 131, 1
+  size: 128, 64
+  orig: 128, 64
+  offset: 0, 0
+  index: -1
+guy
+  rotate: false
+  xy: 957, 885
+  size: 64, 128
+  orig: 64, 128
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 957, 755
+  size: 64, 128
+  orig: 64, 128
+  offset: 0, 0
+  index: -1
+shell
+  rotate: false
+  xy: 261, 1
+  size: 128, 64
+  orig: 128, 64
+  offset: 0, 0
+  index: -1
+weapon
+  rotate: false
+  xy: 391, 1
+  size: 128, 64
+  orig: 128, 64
+  offset: 0, 0
+  index: -1
+button
+  rotate: false
+  xy: 957, 723
+  size: 60, 30
+  orig: 60, 30
+  offset: 0, 0
+  index: -1
+
+textures2.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+titlescreen
+  rotate: false
+  xy: 1, 131
+  size: 949, 718
+  orig: 949, 718
+  offset: 0, 0
+  index: -1
+wall
+  rotate: false
+  xy: 1, 1
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1

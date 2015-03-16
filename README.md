@@ -9,5 +9,6 @@ Knowing that controls are what bothered me the most with smartphone games I trie
 In that regard I believe I succeeded even if the game never got very far.  
 
 On the desktop version you can spawn more enemies by pressing G.  
+Pressing H will change weapons if you have picked up any.  
 
 Whole source is a bit messy, code is around two years old and never built to last.  
